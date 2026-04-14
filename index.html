@@ -42,13 +42,11 @@
 
 <script>
 
-// Replace this string with your actual OpenWeatherMap API key
-const apiKey = "ec062a37137e918d52d8c4ff899dddfd"; 
+const apiKey = "ec062a37137e918d52d8c4ff899dddfd";
 
 async function getWeather() {
   let city = document.getElementById("city").value;
 
-  // Added a check to prevent empty searches
   if (!city) {
     document.getElementById("result").innerHTML = `<p>Please enter a city.</p>`;
     return;
@@ -58,9 +56,15 @@ async function getWeather() {
 
   try {
     let res = await fetch(url);
-    let data = await res.json();
 
-    if (data.cod == 200) {
+    if (!res.ok) {
+      throw new Error("API error");
+    }
+
+    let data = await res.json();
+    console.log(data);
+
+    if (data.cod === 200 || data.cod === "200") {
       document.getElementById("result").innerHTML =
         `<h2>${data.name}</h2>
          <p>🌡 Temp: ${data.main.temp}°C</p>
@@ -69,9 +73,10 @@ async function getWeather() {
       document.getElementById("result").innerHTML =
         `<p>❌ City not found</p>`;
     }
+
   } catch (error) {
     document.getElementById("result").innerHTML =
-        `<p>❌ Error fetching data</p>`;
+      `<p>❌ Error fetching data</p>`;
     console.error(error);
   }
 }
