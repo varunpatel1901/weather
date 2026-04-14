@@ -42,26 +42,41 @@
 
 <script>
 
-const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
+// Replace this string with your actual OpenWeatherMap API key
+const apiKey = "1a2b3c4d5e6f7g8h9i_YOUR_KEY_HERE"; 
 
 async function getWeather() {
   let city = document.getElementById("city").value;
 
+  // Added a check to prevent empty searches
+  if (!city) {
+    document.getElementById("result").innerHTML = `<p>Please enter a city.</p>`;
+    return;
+  }
+
   let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
 
-  let res = await fetch(url);
-  let data = await res.json();
+  try {
+    let res = await fetch(url);
+    let data = await res.json();
 
-  if (data.cod == 200) {
+    if (data.cod == 200) {
+      document.getElementById("result").innerHTML =
+        `<h2>${data.name}</h2>
+         <p>🌡 Temp: ${data.main.temp}°C</p>
+         <p>☁ Condition: ${data.weather[0].main}</p>`;
+    } else {
+      document.getElementById("result").innerHTML =
+        `<p>❌ City not found</p>`;
+    }
+  } catch (error) {
     document.getElementById("result").innerHTML =
-      `<h2>${data.name}</h2>
-       <p>🌡 Temp: ${data.main.temp}°C</p>
-       <p>☁ Condition: ${data.weather[0].main}</p>`;
-  } else {
-    document.getElementById("result").innerHTML =
-      `<p>❌ City not found</p>`;
+        `<p>❌ Error fetching data</p>`;
+    console.error(error);
   }
 }
+
+
 </script>
 </body>
 </html>
