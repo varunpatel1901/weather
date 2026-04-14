@@ -63,11 +63,19 @@ async function getWeather() {
 
     let data = await res.json();
 
+    let sunrise = new Date(data.sys.sunrise * 1000).toLocaleTimeString();
+    let sunset = new Date(data.sys.sunset * 1000).toLocaleTimeString();
+
     if (data.cod === 200 || data.cod === "200") {
       document.getElementById("result").innerHTML =
-        `<h2>${data.name}</h2>
-         <p>🌡 Temp: ${data.main.temp}°C</p>
-         <p>☁ Condition: ${data.weather[0].main}</p>`;
+      `<h2>${data.name}, ${data.sys.country}</h2>
+      <p>🌡 Temp: ${data.main.temp}°C</p>
+      <p>🌅 Sunrise: ${sunrise} (IST)</p>
+      <p>🌙 Sunset: ${sunset} (IST)</p>
+      <p>💧 Humidity: ${data.main.humidity}%</p>
+      <p>🌬 Wind: ${data.wind.speed} m/s</p>
+      <p>☁ Condition: ${data.weather[0].main}</p>
+      <p>📝 Description: ${data.weather[0].description}</p>`;
     } else {
       document.getElementById("result").innerHTML =
         `<p>❌ City not found</p>`;
